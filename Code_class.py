@@ -107,10 +107,6 @@ class Model1(tf.keras.Model):
         self.ids = keras.layers.Input((MAX_LEN,), dtype=tf.int32)
         self.att = keras.layers.Input((MAX_LEN,), dtype=tf.int32)
         self.tok = keras.layers.Input((MAX_LEN,), dtype=tf.int32)
-        # self.Dropout=keras.layers.Dropout(0.1)
-        # self.Conv1D=keras.layers.Conv1D(1, 1)
-        # self.Flatten=keras.layers.Flatten()
-        # self.Activation=keras.layers.Activation('softmax')
 
     def buil(self):
         config = transformers.RobertaConfig.from_pretrained(
@@ -119,16 +115,6 @@ class Model1(tf.keras.Model):
             self.PATH + 'pretrained-roberta-base.h5', config=config)
         x = bert_model(self.ids, attention_mask=self.att,
                        token_type_ids=self.tok)
-
-        # x1 = self.Dropout(x[0])
-        # x1 = self.Conv1D(x1)
-        # x1 = self.Flatten(x1)
-        # x1 = self.Activation(x1)
-
-        # x2 = self.Dropout(x[0])
-        # x2 = self.Conv1D(x2)
-        # x2 = self.Flatten(x2)
-        # x2 = self.Activation(x2)
         x1 = tf.keras.layers.Dropout(0.1)(x[0])
         x1 = tf.keras.layers.Conv1D(1, 1)(x1)
         x1 = tf.keras.layers.Flatten()(x1)
