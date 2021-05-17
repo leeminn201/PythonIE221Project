@@ -18,7 +18,7 @@ test = libary.pd.read_csv(
 print(train.head())
 
 
-class Process_data(libary.matrix):
+class Process_data():
     def __init__(self, ct1, ct2, MAX_LEN):
         self.ct1 = ct1
         self.ct2 = ct2
