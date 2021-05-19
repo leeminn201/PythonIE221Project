@@ -1,4 +1,4 @@
-from Library import library
+# from Library import library
 from build_model.build import Model1
 from load_data import load
 
@@ -17,25 +17,25 @@ class Train(Model1):
         self.attention_mask_t = attention_mask_t
         self.start_tokens = start_tokens
         self.end_tokens = end_tokens
-        self.skf = library.StratifiedKFold(
+        self.skf = load.library.StratifiedKFold(
             n_splits=5, shuffle=True, random_state=777)
-        self.oof_start = library.np.zeros((input_ids.shape[0], MAX_LEN))
-        self.oof_end = library.np.zeros((input_ids.shape[0], MAX_LEN))
-        self.preds_start = library.np.zeros((input_ids_t.shape[0], MAX_LEN))
-        self.preds_end = library.np.zeros((input_ids_t.shape[0], MAX_LEN))
+        self.oof_start = load.library.np.zeros((input_ids.shape[0], MAX_LEN))
+        self.oof_end = load.library.np.zeros((input_ids.shape[0], MAX_LEN))
+        self.preds_start = load.library.np.zeros((input_ids_t.shape[0], MAX_LEN))
+        self.preds_end = load.library.np.zeros((input_ids_t.shape[0], MAX_LEN))
 
     def Acu(self):
-        print('>>>> OVERALL 5Fold CV Jaccard =', library.np.mean(self.jac))
+        print('>>>> OVERALL 5Fold CV Jaccard =', load.library.np.mean(self.jac))
 
     def Train_model(self):
         for fold, (idxT, idxV) in enumerate(self.skf.split(self.input_ids, load.train.sentiment.values)):
             print('#' * 25)
             print('### FOLD %i' % (fold + 1))
             print('#' * 25)
-            library.K.clear_session()
+            load.library.K.clear_session()
             model = super().buil()
 
-            sv = library.tf.keras.callbacks.ModelCheckpoint(
+            sv = load.library.tf.keras.callbacks.ModelCheckpoint(
                 '%s-roberta-%i.h5' % (self.VER, fold), monitor='val_loss', verbose=1, save_best_only=True,
                 save_weights_only=True, mode='auto', save_freq='epoch')
 
@@ -61,19 +61,19 @@ class Train(Model1):
             # DISPLAY FOLD JACCARD
             all = []
             for k in idxV:
-                a = Model1.np.argmax(self.oof_start[k, ])
-                b = Model1.np.argmax(self.oof_end[k, ])
+                a = load.library.np.argmax(self.oof_start[k, ])
+                b = load.library.np.argmax(self.oof_end[k, ])
                 if a > b:
                     # IMPROVE CV/LB with better choice here
-                    st = Model1.train.loc[k, 'text']
+                    st = load.train.loc[k, 'text']
                 else:
-                    text1 = " " + " ".join(Model1.train.loc[k, 'text'].split())
-                    enc = Model1.tokenizer.encode(text1)
-                    st = Model1.tokenizer.decode(enc.ids[a - 1:b])
+                    text1 = " " + " ".join(load.train.loc[k, 'text'].split())
+                    enc = load.tokenizer.encode(text1)
+                    st = load.tokenizer.decode(enc.ids[a - 1:b])
                 all.append(super().jaccard(
-                    st, Model1.train.loc[k, 'selected_text']))
-            self.jac.append(Model1.np.mean(all))
-            print('>>>> FOLD %i Jaccard =' % (fold + 1), library.np.mean(all))
+                    st, load.library.train.loc[k, 'selected_text']))
+            self.jac.append(load.library.np.mean(all))
+            print('>>>> FOLD %i Jaccard =' % (fold + 1), load.library.np.mean(all))
             print()
 
 
