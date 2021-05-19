@@ -1,20 +1,17 @@
-
-
-from doAN.libary import libary
-
+from Library import library
 MAX_LEN = 96
-PATH = 'D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/PythonIE221Project/tf-roberta/'
-tokenizer = libary.tokenizers.ByteLevelBPETokenizer(
+PATH = 'D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/tf-roberta/'
+tokenizer = library.tokenizers.ByteLevelBPETokenizer(
     vocab=PATH + 'vocab-roberta-base.json',
     merges=PATH + 'merges-roberta-base.txt',
     lowercase=True,
     add_prefix_space=True
 )
 sentiment_id = {'positive': 1313, 'negative': 2430, 'neutral': 7974}
-train = libary.pd.read_csv(
-    'D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/PythonIE221Project/Dataset/train.csv').fillna('')
-test = libary.pd.read_csv(
-    'D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/PythonIE221Project/Dataset/test.csv').fillna('')
+train = library.pd.read_csv(
+    'D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/Dataset/train.csv').fillna('')
+test = library.pd.read_csv(
+    'D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/Dataset/test.csv').fillna('')
 print(train.head())
 
 
@@ -23,21 +20,21 @@ class Process_data():
         self.ct1 = ct1
         self.ct2 = ct2
         self.MAX_LEN = MAX_LEN
-        self.input_ids = libary.np.ones((ct1, MAX_LEN), dtype='int32')
-        self.attention_mask = libary.np.zeros((ct1, MAX_LEN), dtype='int32')
-        self.token_type_ids = libary.np.zeros((ct1, MAX_LEN), dtype='int32')
-        self.start_tokens = libary.np.zeros((ct1, MAX_LEN), dtype='int32')
-        self.end_tokens = libary.np.zeros((ct1, MAX_LEN), dtype='int32')
-        self.input_ids_t = libary.np.ones((ct2, MAX_LEN), dtype='int32')
-        self.attention_mask_t = libary.np.zeros((ct2, MAX_LEN), dtype='int32')
-        self.token_type_ids_t = libary.np.zeros((ct2, MAX_LEN), dtype='int32')
+        self.input_ids = library.np.ones((ct1, MAX_LEN), dtype='int32')
+        self.attention_mask = library.np.zeros((ct1, MAX_LEN), dtype='int32')
+        self.token_type_ids = library.np.zeros((ct1, MAX_LEN), dtype='int32')
+        self.start_tokens = library.np.zeros((ct1, MAX_LEN), dtype='int32')
+        self.end_tokens = library.np.zeros((ct1, MAX_LEN), dtype='int32')
+        self.input_ids_t = library.np.ones((ct2, MAX_LEN), dtype='int32')
+        self.attention_mask_t = library.np.zeros((ct2, MAX_LEN), dtype='int32')
+        self.token_type_ids_t = library.np.zeros((ct2, MAX_LEN), dtype='int32')
 
     @staticmethod
     def FIND_OVERLAP(k):
         text1 = " " + " ".join(train.loc[k, 'text'].split())
         text2 = " ".join(train.loc[k, 'selected_text'].split())
         idx = text1.find(text2)
-        chars = libary.np.zeros((len(text1)))
+        chars = library.np.zeros((len(text1)))
         chars[idx:idx + len(text2)] = 1
         if text1[idx - 1] == ' ':
             chars[idx - 1] = 1
@@ -57,7 +54,7 @@ class Process_data():
     def START_END_TOKENS(self, offsets, chars=None, k=None, enc=None):
         toks = []
         for i, (a, b) in enumerate(offsets):
-            sm = libary.np.sum(chars[a:b])
+            sm = library.np.sum(chars[a:b])
             if sm > 0:
                 toks.append(i)
 
@@ -76,6 +73,7 @@ class Process_data():
         self.input_ids_t[k, :len(enc.ids) + 5] = [0] + \
             enc.ids + [2, 2] + [s_tok] + [2]
         self.attention_mask_t[k, :len(enc.ids) + 5] = 1
+
 
 
 a = Process_data(train.shape[0], test.shape[0], MAX_LEN)
