@@ -2,6 +2,7 @@ from load_data import load
 from build_model import build
 import pandas as pd
 import random as r
+import os
 class Test(build.Model1):
     def __init__(self,MAX_LEN,PATH,path):
         super().__init__(MAX_LEN,PATH)
@@ -11,13 +12,13 @@ class Test(build.Model1):
         self.VER = 'v0';
         self.DISPLAY = 1;
         self.skf = load.library.StratifiedKFold(n_splits=5, shuffle=True, random_state=777)
-        self.df = pd.DataFrame(columns=["textID", "text", "sentiment", "selected_text"])
         self.arr = {
             0: 'neutral',
             1: 'positive',
             2: 'negative'
         }
-    def TEST_1text(self,test):
+#Test model
+    def TEST_MODEL(self,test):
         # INPUT_IDS
         ct=test.shape[0]
         input_ids_t = load.library.np.ones((ct, self.MAX_LEN), dtype='int32')
@@ -34,8 +35,8 @@ class Test(build.Model1):
         self.model.load_weights(self.path)
         print('Predicting Test...')
         preds = self.model.predict([input_ids_t, attention_mask_t, token_type_ids_t], verbose=self.DISPLAY)
-        preds_start += preds[0] / self.skf.n_splits
-        preds_end += preds[1] / self.skf.n_splits
+        preds_start += preds[0]
+        preds_end += preds[1]
         all = []
         for k in range(input_ids_t.shape[0]):
             a = load.library.np.argmax(preds_start)
@@ -49,7 +50,9 @@ class Test(build.Model1):
                 st = load.tokenizer.decode(enc.ids[a - 1:b])
             all.append(st)
         return all
-    def TEXT(self,p):
+#Load dữ liệu người dùng nhập
+    def TEXT(self):
+        df = pd.DataFrame(columns=["textID", "text", "sentiment"])
         while True:
             name = input("Nhập text cảm xúc : ")
             n = int(input("[0:'neutral',1:'positive',2:'negative']=  "))
@@ -61,16 +64,19 @@ class Test(build.Model1):
                 "text": name,
                 "sentiment": self.arr[n]
             }
-            self.df = self.df.append(data, ignore_index=True)
+            df = df.append(data, ignore_index=True)
             k = int(input("Nếu bạn ko cần text nữa thì chọn 0 = "))
             if k == 0:
                 break
+        return df
         # df[["textID", "text", "sentiment", "selected_text"]].to_csv('D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/Dataset/submission.csv', index=False)
+#Đưa file CSV để load
     @staticmethod
     def TEXT_CSV():
         k = input("Nhập đường dẫn link = ")
         test = pd.read_csv(k).fillna('')
-        return test
+        return test,k
+#Test 1 câu không cần lưu chỉ test để xem kết quả
     def Text_speed_1cau(self,str1,sentiment):
         input_ids_t = load.library.np.ones((1, self.MAX_LEN), dtype='int32')
         attention_mask_t = load.library.np.zeros((1, self.MAX_LEN), dtype='int32')
@@ -82,10 +88,16 @@ class Test(build.Model1):
         s_tok = load.sentiment_id[sentiment]
         input_ids_t[0, :len(enc.ids) + 5] = [0] + enc.ids + [2, 2] + [s_tok] + [2]
         attention_mask_t[0, :len(enc.ids) + 5] = 1
+        #Nếu load 5 fold với 5 model đã train thì kết quả tốt hơn
+        # for fold in range(0,model_ct):
+        #     self.model.load_weights('/content/drive/MyDrive/NLP/backup/%s-roberta-%i.h5'%(self.VER,fold))
+        #     print('Predicting Test...')
+        #     preds = self.model.predict([input_ids_t, attention_mask_t, token_type_ids_t],
+        #                            verbose=self.DISPLAY)
+        #     preds_start += preds[0] / self.skf.n_splits
+        #     preds_end += preds[1] / self.skf.n_splits
         self.model.load_weights(self.path)
-        print('Predicting Test...')
-        preds = self.model.predict([input_ids_t, attention_mask_t, token_type_ids_t],
-                                   verbose=self.DISPLAY)
+        preds = self.model.predict([input_ids_t, attention_mask_t, token_type_ids_t],verbose=self.DISPLAY)
         preds_start += preds[0] / self.skf.n_splits
         preds_end += preds[1] / self.skf.n_splits
         a = load.library.np.argmax(preds_start)
@@ -97,33 +109,46 @@ class Test(build.Model1):
             enc = load.tokenizer.encode(text1)
             st = load.tokenizer.decode(enc.ids[a - 1:b])
         print("text: {}   sentiment: {}   selected_text:  {}".format(str1,sentiment,st))
+#Kết quả lưu vào file csv minh tạo để lưu khi người dùng nhập
     @staticmethod
     def KQ(test,all):
         test['selected_text'] = all
-        # test[['selected_text']].to_csv('D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/Dataset/submission.csv', index=False)
-        # pd.set_option('max_colwidth', 60)
-        # test.sample(1)
-        print(test['selected_text'])
+        if not os.path.isfile('D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/Dataset/submission.csv'):
+            test.to_csv('D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/Dataset/submission.csv', index=False)
+        else:
+            with open('D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/Dataset/submission.csv', 'a', encoding="utf-8",newline='') as f:
+                test.to_csv(f, index=False, header=f.tell()==0)
+        print(test[['text','selected_text']])
+#Kết quả lưu vào file CSV khi đưa vào để test,sample_submission.csv lưu toàn bộ dữ liệu được test từ file csv (nhiều file csv)
+    @staticmethod
+    def KQ_ADD_CSV(test,all,link_file):
+        test['selected_text'] = all
+        if not os.path.isfile('D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/Dataset/sample_submission.csv'):
+            test.to_csv('D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/Dataset/sample_submission.csv', index=False)
+        else:
+            with open('D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/Dataset/sample_submission.csv', 'a', encoding="utf-8",newline='') as f:
+                test.to_csv(f, index=False, header=f.tell()==0)
+        test.to_csv(link_file, index=False)
+        print(test.sample(2))
 path='D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/backup/v0-roberta-4.h5'
 a=Test(load.MAX_LEN,load.PATH,path)
-# df=a.TEXT()
-# all=a.TEST_1text(df)
-# a.KQ(df,all)
-# name = input("Nhập text cảm xúc : ")
-# arr = {
-#             0: 'neutral',
-#             1: 'positive',
-#             2: 'negative'
-#         }
-# n = int(input("[0:'neutral',1:'positive',2:'negative']=  "))
-# a.Text_speed_1cau(name,arr[n])
-df=a.TEXT_CSV()
-all=a.TEST_1text(df)
+#Test với 1 câu nhanh ko cần lưu vô csv:
+name = input("Nhập text cảm xúc : ")
+arr = {
+            0: 'neutral',
+            1: 'positive',
+             2: 'negative'
+         }
+n = int(input("[0:'neutral',1:'positive',2:'negative']=  "))
+a.Text_speed_1cau(name,arr[n])
+
+
+#Test với 1 hoặc nhiều câu lưu vô file D:\UIT LEARN\Năm 3 Kì 2\Python\do_an\doAN\Dataset\submission.csv đây là file chính lưu dữ liệu người dùng đưa vào
+df=a.TEXT()  #người dùng nhập dư liệu từ bàn phím (cần xữ lí try catch khi người dùng nhập sai hoặc ràng buộc)
+all=a.TEST_MODEL(df)  # đưa dữ liệu vào và bắt đầu test xuất ra kq
 a.KQ(df,all)
 
-# for fold in range(0,5):
-#   model.load_weights('/content/drive/MyDrive/NLP/backup/%s-roberta-%i.h5'%(VER,fold))
-#   print('Predicting Test...')
-#   preds = model.predict([input_ids_t,attention_mask_t,token_type_ids_t],verbose=DISPLAY)
-#   preds_start += preds[0]/skf.n_splits
-#   preds_end += preds[1]/skf.n_splits
+#Test với 1 file csv bất kì nhung phải có header là "text", "sentiment" sai định dạng cút
+df,link=a.TEXT_CSV()
+all=a.TEST_MODEL(df)
+a.KQ_ADD_CSV(df,all,link)
