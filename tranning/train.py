@@ -1,9 +1,9 @@
 # from Library import library
-from build_model.build import Model1
+from build_model.build import Model_RoBERTa
 from load_data import load
 
 
-class Train(Model1):
+class Train(Model_RoBERTa,load.library.Stra_Kfold):
     def __init__(self, MAX_LEN, PATH, input_ids, input_ids_t, attention_mask, attention_mask_t, token_type_ids, token_type_ids_t, start_tokens, end_tokens):
         super().__init__(MAX_LEN, PATH)
         self.DISPLAY = 1
@@ -17,8 +17,9 @@ class Train(Model1):
         self.attention_mask_t = attention_mask_t
         self.start_tokens = start_tokens
         self.end_tokens = end_tokens
-        self.skf = load.library.StratifiedKFold(
-            n_splits=5, shuffle=True, random_state=777)
+        self.skf = load.library.Stra_Kfold(5,True,777)
+        # self.skf = load.library.StratifiedKFold(
+        #     n_splits=5, shuffle=True, random_state=777)
         self.oof_start = load.library.np.zeros((input_ids.shape[0], MAX_LEN))
         self.oof_end = load.library.np.zeros((input_ids.shape[0], MAX_LEN))
         self.preds_start = load.library.np.zeros((input_ids_t.shape[0], MAX_LEN))
@@ -33,7 +34,7 @@ class Train(Model1):
             print('### FOLD %i' % (fold + 1))
             print('#' * 25)
             load.library.K.clear_session()
-            model = super().buil()
+            model = super().build_model()
 
             sv = load.library.tf.keras.callbacks.ModelCheckpoint(
                 '%s-roberta-%i.h5' % (self.VER, fold), monitor='val_loss', verbose=1, save_best_only=True,
@@ -71,7 +72,7 @@ class Train(Model1):
                     enc = load.tokenizer.encode(text1)
                     st = load.tokenizer.decode(enc.ids[a - 1:b])
                 all.append(super().jaccard(
-                    st, load.library.train.loc[k, 'selected_text']))
+                    st, load.train.loc[k, 'selected_text']))
             self.jac.append(load.library.np.mean(all))
             print('>>>> FOLD %i Jaccard =' % (fold + 1), load.library.np.mean(all))
             print()

@@ -1,17 +1,18 @@
+import keras
+
 from load_data import load
 from build_model import build
 import pandas as pd
 import random as r
 import os
-class Test(build.Model1):
+class Test(build.Model_RoBERTa):
     def __init__(self,MAX_LEN,PATH,path):
         super().__init__(MAX_LEN,PATH)
-        self.MAX_LEN=MAX_LEN
         self.path=path
-        self.model=super().buil()
+        self.model=super().build_model()
         self.VER = 'v0';
         self.DISPLAY = 1;
-        self.skf = load.library.StratifiedKFold(n_splits=5, shuffle=True, random_state=777)
+        self.skf = load.library.Stra_Kfold(5,True,777)
         self.arr = {
             0: 'neutral',
             1: 'positive',
