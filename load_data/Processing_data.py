@@ -1,4 +1,4 @@
-from Library import library
+from Library import Library_Structure as library
 MAX_LEN = 96
 PATH = 'D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/tf-roberta/'
 tokenizer = library.tokenizers.ByteLevelBPETokenizer(
@@ -73,7 +73,6 @@ class Process_data():
         self.input_ids_t[k, :len(enc.ids) + 5] = [0] + \
             enc.ids + [2, 2] + [s_tok] + [2]
         self.attention_mask_t[k, :len(enc.ids) + 5] = 1
-
 
 
 a = Process_data(train.shape[0], test.shape[0], MAX_LEN)

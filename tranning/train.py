@@ -1,6 +1,6 @@
 # from Library import library
-from build_model.build import Model_RoBERTa
-from load_data import load
+from Build_Model.Build import Model_RoBERTa
+from Load_Data import Processing_data as load
 
 
 class Train(Model_RoBERTa,load.library.Stra_Kfold):
@@ -25,7 +25,7 @@ class Train(Model_RoBERTa,load.library.Stra_Kfold):
         self.preds_start = load.library.np.zeros((input_ids_t.shape[0], MAX_LEN))
         self.preds_end = load.library.np.zeros((input_ids_t.shape[0], MAX_LEN))
 
-    def Acu(self):
+    def Accuracy(self):
         print('>>>> OVERALL 5Fold CV Jaccard =', load.library.np.mean(self.jac))
 
     def Train_model(self):
@@ -34,7 +34,7 @@ class Train(Model_RoBERTa,load.library.Stra_Kfold):
             print('### FOLD %i' % (fold + 1))
             print('#' * 25)
             load.library.K.clear_session()
-            model = super().build_model()
+            model = super().Build_model()
 
             sv = load.library.tf.keras.callbacks.ModelCheckpoint(
                 '%s-roberta-%i.h5' % (self.VER, fold), monitor='val_loss', verbose=1, save_best_only=True,
@@ -71,8 +71,7 @@ class Train(Model_RoBERTa,load.library.Stra_Kfold):
                     text1 = " " + " ".join(load.train.loc[k, 'text'].split())
                     enc = load.tokenizer.encode(text1)
                     st = load.tokenizer.decode(enc.ids[a - 1:b])
-                all.append(super().jaccard(
-                    st, load.train.loc[k, 'selected_text']))
+                all.append(super().Jaccard(st, load.train.loc[k, 'selected_text']))
             self.jac.append(load.library.np.mean(all))
             print('>>>> FOLD %i Jaccard =' % (fold + 1), load.library.np.mean(all))
             print()
@@ -81,4 +80,4 @@ class Train(Model_RoBERTa,load.library.Stra_Kfold):
 bui = Train(load.MAX_LEN, load.PATH, load.a.input_ids, load.a.input_ids_t, load.a.attention_mask,
             load.a.attention_mask_t, load.a.token_type_ids, load.a.token_type_ids_t, load.a.start_tokens, load.a.end_tokens)
 bui.Train_model()
-bui.Acu()
+bui.Accuracy()
