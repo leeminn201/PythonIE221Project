@@ -1,9 +1,13 @@
-# from Library import library
+'''
+    Module tranning và đánh giá kết quả.
+'''
 from Build_Model.Build import Model_RoBERTa
 from Load_Data import Processing_data as load
 
-
 class Train(Model_RoBERTa,load.library.Stra_Kfold):
+    '''
+        Class train và đánh giá kết quả project.
+    '''
     def __init__(self, MAX_LEN, PATH, input_ids, input_ids_t, attention_mask, attention_mask_t, token_type_ids, token_type_ids_t, start_tokens, end_tokens):
         super().__init__(MAX_LEN, PATH)
         self.DISPLAY = 1
@@ -26,9 +30,15 @@ class Train(Model_RoBERTa,load.library.Stra_Kfold):
         self.preds_end = load.library.np.zeros((input_ids_t.shape[0], MAX_LEN))
 
     def Accuracy(self):
+        '''
+            Hàm đánh giá kết quả project.
+        '''
         print('>>>> OVERALL 5Fold CV Jaccard =', load.library.np.mean(self.jac))
 
     def Train_model(self):
+        '''
+            Hàm train model.
+        '''
         for fold, (idxT, idxV) in enumerate(self.skf.split(self.input_ids, load.train.sentiment.values)):
             print('#' * 25)
             print('### FOLD %i' % (fold + 1))
