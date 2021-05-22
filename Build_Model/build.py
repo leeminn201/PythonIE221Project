@@ -1,7 +1,12 @@
+'''
+    Module build model và độ đo.
+'''
 from Library import Library_Structure as library
 
-
 class Model_RoBERTa(library.Roberta_Config):
+    '''
+        Class thiết lập, xây dựng model.
+    '''
     def __init__(self, MAX_LEN, PATH, pad_token_id=1, bos_token_id=0, eos_token_id=2):
         super(library.Roberta_Config, self).__init__(
             pad_token_id=pad_token_id, bos_token_id=bos_token_id, eos_token_id=eos_token_id)
@@ -15,6 +20,10 @@ class Model_RoBERTa(library.Roberta_Config):
             (MAX_LEN,), dtype=library.tf.int32)
 
     def Build_model(self):
+        '''
+            Hàm build model.
+        :return: Model
+        '''
         config = super().Roberta(self.PATH + 'config-roberta-base.json')
         a = library.TFRoberta_Model(config)
         bert_model = a.call_model(self.PATH + 'pretrained-roberta-base.h5')
@@ -38,6 +47,12 @@ class Model_RoBERTa(library.Roberta_Config):
 
     @staticmethod
     def Jaccard(str1, str2):
+        '''
+            Hàm xây dựng độ đo dùng trong project. Đơn giản là giao các kết quả sau khi chia nhỏ để đánh giá.
+        :param str1: Phần đánh giá 1.
+        :param str2: Phần đánh giá 2.
+        :return: Kết quả.
+        '''
         a = set(str1.lower().split())
         b = set(str2.lower().split())
         if (len(a) == 0) & (len(b) == 0):
