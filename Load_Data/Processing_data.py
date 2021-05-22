@@ -1,4 +1,11 @@
+'''
+ Đây là module có chức năng:
+    +Load data train/test.
+    +Cấu hình hàm tokenizer BBPE.
+    +Xây dựng class xử lí đầu vào.
+'''
 from Library import Library_Structure as library
+
 MAX_LEN = 96
 PATH = 'D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/tf-roberta/'
 tokenizer = library.tokenizers.ByteLevelBPETokenizer(
@@ -14,8 +21,10 @@ test = library.pd.read_csv(
     'D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/Dataset/test.csv').fillna('')
 print(train.head())
 
-
 class Process_data():
+    '''
+        Class xử lí đầu vào cho để train model.
+    '''
     def __init__(self, ct1, ct2, MAX_LEN):
         self.ct1 = ct1
         self.ct2 = ct2
@@ -31,6 +40,11 @@ class Process_data():
 
     @staticmethod
     def FIND_OVERLAP(k):
+        '''
+              Hàm tìm và encode các từ selected_text trùng ở text.
+        :param k: Câu text
+        :return: vị trí từ trùng lặp, ma trận 0 của câu text, câu text endcode
+        '''
         text1 = " " + " ".join(train.loc[k, 'text'].split())
         text2 = " ".join(train.loc[k, 'selected_text'].split())
         idx = text1.find(text2)
@@ -43,6 +57,11 @@ class Process_data():
 
     @staticmethod
     def ID_OFFSETS(enc=None):
+        '''
+            Hàm decode
+        :param enc: None
+        :return: List vị trí các từ trùng lặp.
+        '''
         offsets = []
         idx = 0
         for t in enc.ids:
@@ -52,6 +71,13 @@ class Process_data():
         return offsets
 
     def START_END_TOKENS(self, offsets, chars=None, k=None, enc=None):
+        '''
+            Cấu tình tham số bắt đầu và kết thúc.
+        :param offsets: List vị trí các từ trùng lặp.
+        :param chars: None
+        :param k: None
+        :param enc: None
+        '''
         toks = []
         for i, (a, b) in enumerate(offsets):
             sm = library.np.sum(chars[a:b])
@@ -67,6 +93,10 @@ class Process_data():
             self.end_tokens[k, toks[-1] + 1] = 1
 
     def INPUT_IDS(self, k):
+        '''
+            Thiết lập ma trận đầu vào cho model.
+        :param k: câu text
+        '''
         text1 = " " + " ".join(test.loc[k, 'text'].split())
         enc = tokenizer.encode(text1)
         s_tok = sentiment_id[test.loc[k, 'sentiment']]
