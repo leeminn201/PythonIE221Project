@@ -1,9 +1,15 @@
+'''
+    Module kiểm tra trực tiếp project.
+'''
 from Load_Data import Processing_data as load
 from Build_Model import Build as build
 import pandas as pd
 import random as r
 import os
 class Test(build.Model_RoBERTa):
+    '''
+        Class test project.
+    '''
     def __init__(self,MAX_LEN,PATH,path):
         super().__init__(MAX_LEN,PATH)
         self.path=path
@@ -18,6 +24,11 @@ class Test(build.Model_RoBERTa):
         }
 #Test model
     def Test_Model(self,test):
+        '''
+            Đưa câu test vào model.
+        :param test: câu test
+        :return:
+        '''
         # INPUT_IDS
         ct = test.shape[0]
         input_ids_t = load.library.np.ones((ct, self.MAX_LEN), dtype='int32')
@@ -52,6 +63,9 @@ class Test(build.Model_RoBERTa):
         return all
 #Load dữ liệu người dùng nhập
     def Text(self):
+        '''
+            Xử lí câu input.
+        '''
         df = pd.DataFrame(columns=["textID", "text", "sentiment"])
         while True:
             name = input("Nhập text cảm xúc : ")
@@ -73,11 +87,19 @@ class Test(build.Model_RoBERTa):
 #Đưa file CSV để load
     @staticmethod
     def Text_CSV():
+        '''
+            Input file test dạng csv.
+        '''
         k = input("Nhập đường dẫn link = ")
         test = pd.read_csv(k).fillna('')
         return test,k
 #Test 1 câu không cần lưu chỉ test để xem kết quả
     def Text_Speed_Sentences(self,str1,sentiment):
+        '''
+            Test 1 câu nhưng không lưu kết quả.
+        :param str1: Câu test.
+        :param sentiment: Sentiment của câu test.
+        '''
         input_ids_t = load.library.np.ones((1, self.MAX_LEN), dtype='int32')
         attention_mask_t = load.library.np.zeros((1, self.MAX_LEN), dtype='int32')
         token_type_ids_t = load.library.np.zeros((1, self.MAX_LEN), dtype='int32')
@@ -112,6 +134,9 @@ class Test(build.Model_RoBERTa):
 #Kết quả lưu vào file csv minh tạo để lưu khi người dùng nhập
     @staticmethod
     def Result(test,all):
+        '''
+            Kết quả lưu vào file csv minh tạo để lưu khi người dùng nhập
+        '''
         test['selected_text'] = all
         if not os.path.isfile('D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/Dataset/submission.csv'):
             test.to_csv('D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/Dataset/submission.csv', index=False)
@@ -122,6 +147,10 @@ class Test(build.Model_RoBERTa):
 #Kết quả lưu vào file CSV khi đưa vào để test,sample_submission.csv lưu toàn bộ dữ liệu được test từ file csv (nhiều file csv)
     @staticmethod
     def Result_CSV(test,all,link_file=None):
+        '''
+        Kết quả lưu vào file CSV khi đưa vào để test.
+        Sample_submission.csv lưu toàn bộ dữ liệu được test từ một/nhiều file csv
+        '''
         test['selected_text'] = all
         if not os.path.isfile('D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/Dataset/sample_submission.csv'):
             test.to_csv('D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/Dataset/sample_submission.csv', index=False)
