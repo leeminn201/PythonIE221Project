@@ -6,7 +6,9 @@ from tranning.train import Train
 
 from build_model import build
 
-
+'''
+Class trực quan hóa kết quả sau khi đã trainning cho chương trình xong
+'''
 class Visual(load):
     def __init__(self, ct1, ct2, MAX_LEN):
         super.__init__(self, ct1, ct2, MAX_LEN)
@@ -42,7 +44,11 @@ class Visual(load):
         self.Train['selected_text_pred'] = all
         self.Train.sample(10)
         return self.Train
+ 
 
+'''
+Hàm thống kê các chỉ số của thuộc tính
+'''
     def summary(self):
         return train.describe()
 
