@@ -6,95 +6,183 @@ pip install transformers
 import sys
 sys.path.insert(0,'/content/drive/MyDrive/Kỹ thuật lập trình Python/Code_Python/Code_Luong')
 
-from Library import library
-from load_data import load
-
 from Library import library as l
-from load_data import load
+# from LoadData import load_data as load
+from load_data import load as p
+import pandas as pd
+# from LoadData import processing_data as p
+# from Trainning.train_model import Train
+# from VisualData.visual_data import Visual
+# from BuildModel import build as b
+# from LoadData.load_data import MAX_LEN, PATH
+# from Trainning import Test_cau as Test
 
+
+from load_data.load import PATH, MAX_LEN
+from build_model import build as b
 from tranning import train
+from tranning.train import Train
+from tranning import Test_cau as Test
 from VisualData.visual_data import Visual
-from tranning import Test_cau
-
-
 
 class Menu():
     def __init__(self):
-        pass
+        self.input_ids =  p.a.input_ids
+        self.input_ids_t = p.a.input_ids_t
+        self.preds_start_train = l.np.zeros((self.input_ids.shape[0],96))
+        self.preds_end_train = l.np.zeros((self.input_ids.shape[0],96))
+        self.preds_start = l.np.zeros((self.input_ids_t.shape[0], 96))
+        self.preds_end = l.np.zeros((self.input_ids_t.shape[0],96))
+        self.start_tokens = p.a.start_tokens
+        self.end_tokens = p.a.end_tokens
+
 
     def menu1(self):
-        return load.train.shape(), load.test.shape()
+        # return load.train.shape, load.test.shape
+        return p.train.shape, p.test.shape
 
     def menu2(self):
-        return load.train.head(30)
+        # return load.train.head(30)
+        return p.train.head(30)
 
     def menu3(self):
-        return load.test.head(30)
+        # return load.test.head(30)
+        return p.test.head(30)
 
     def menu4(self):
-        x = b.Model1(1, 96)
+        x = b.Model_RoBERTa(96, PATH)
         return x.build_model()
 
     def menu5(self):
-        Build = Train(MAX_LEN, PATH, p.a.input_ids, p.a.input_ids_t, p.a.attention_mask,
-                p.a.attention_mask_t, p.a.token_type_ids, p.a.token_type_ids_t, p.a.start_tokens, p.a.end_tokens)
-        return Build.trainModel()
+        Build = Train(MAX_LEN, PATH, p.a.input_ids, p.a.input_ids_t, p.a.attention_mask,p.a.attention_mask_t, p.a.token_type_ids, p.a.token_type_ids_t, p.a.start_tokens, p.a.end_tokens)
+        # self.input_ids, self.input_ids_t, self.preds_start_train, self.preds_end_train, self.preds_start, self.preds_end, self.start_tokens, self.end_token = 
+        Build.Train_model()
+        return Build.Acu()
 
-    def menu6(self, model):
-        Build = Train(load.MAX_LEN, load.PATH, load.a.input_ids, load.a.input_ids_t, load.a.attention_mask,
-                     load.a.attention_mask_t, load.a.token_type_ids, load.a.token_type_ids_t, load.a.start_tokens, load.a.end_tokens)
-        return Build.accuracy()
+    def menu6(self):
+        link = '/content/drive/MyDrive/Do_An_Python/Dataset/train.csv'
+        df_train = pd.read_csv(link).fillna('')
+        all = Test.a.Test_Model(df_train)
+        return Test.a.Result_CSV(df_train, all, '/content/drive/MyDrive/sample_train.csv')
 
-    def menu7():
-        return Visual.visualTrain()
+    def menu7(self):
+        link = '/content/drive/MyDrive/Do_An_Python/Dataset/test.csv'
+        df_test = pd.read_csv(link).fillna('')
+        all = Test.a.Test_Model(df_test)
+        return Test.a.Result_CSV(df_test, all, '/content/drive/MyDrive/sample_test.csv')
 
-    def menu8():
-        return Visual.visualTest()
+    def menu8(self):
+        Visual.wordCloud()
 
-    def menu9():
-        return Visual.all_of_Train()
+    def menu9(self):
+        # v = self.menu6()
+        # return v.all_of_Train()
+        pass
+    
+    def menu10(self):
+        # v = self.menu6()
+        # return v.wordCloud()
+        pass
 
-    def menu10():
-        return Visual.wordCloud()
+    def menu11(self):
+        # v = self.menu6()
+        # return v.histogram()
+        pass
 
-    def menu11():
-        return Visual.histogram()
+    def menu12(self, cau):
+        for c in cau:
+            c = c.upper()
+            if (c == "A"):
+                print("..######..\n..#....#..\n..######..\n..#....#..\n..#....#..\n\n")
+            elif (c == "B"):
+                print("..######..\n..#....#..\n..#####...\n..#....#..\n..######..\n\n")
+            elif (c == "C"):
+                print("..######..\n..#.......\n..#.......\n..#.......\n..######..\n\n")
+            elif (c == "D"):
+                print("..#####...\n..#....#..\n..#....#..\n..#....#..\n..#####...\n\n")
+            elif (c == "E"):
+                print("..######..\n..#.......\n..#####...\n..#.......\n..######..\n\n")
+            elif (c == "F"):
+                print("..######..\n..#.......\n..#####...\n..#.......\n..#.......\n\n")
+            elif (c == "G"):
+                print("..######..\n..#.......\n..#####...\n..#....#..\n..#####...\n\n")
+            elif (c == "H"):
+                print("..#....#..\n..#....#..\n..######..\n..#....#..\n..#....#..\n\n")
+            elif (c == "I"):
+                print("..######..\n....##....\n....##....\n....##....\n..######..\n\n")
+            elif (c == "J"):
+                print("..######..\n....##....\n....##....\n..#.##....\n..####....\n\n")
+            elif (c == "K"):
+                print("..#...#...\n..#..#....\n..##......\n..#..#....\n..#...#...\n\n")
+            elif (c == "L"):
+                print("..#.......\n..#.......\n..#.......\n..#.......\n..######..\n\n")
+            elif (c == "M"):
+                print("..#....#..\n..##..##..\n..#.##.#..\n..#....#..\n..#....#..\n\n")
+            elif (c == "N"):
+                print("..#....#..\n..##...#..\n..#.#..#..\n..#..#.#..\n..#...##..\n\n")
+            elif (c == "O"):
+                print("..######..\n..#....#..\n..#....#..\n..#....#..\n..######..\n\n")
+            elif (c == "P"):
+                print("..######..\n..#....#..\n..######..\n..#.......\n..#.......\n\n")
+            elif (c == "Q"):
+                print("..######..\n..#....#..\n..#.#..#..\n..#..#.#..\n..######..\n\n")
+            elif (c == "R"):
+                print("..######..\n..#....#..\n..#.##...\n..#...#...\n..#....#..\n\n")
+            elif (c == "S"):
+                print("..######..\n..#.......\n..######..\n.......#..\n..######..\n\n")
+            elif (c == "T"):
+                print("..######..\n....##....\n....##....\n....##....\n....##....\n\n")
+            elif (c == "U"):
+                print("..#....#..\n..#....#..\n..#....#..\n..#....#..\n..######..\n\n")
+            elif (c == "V"):
+                print("..#....#..\n..#....#..\n..#....#..\n...#..#...\n....##....\n\n")
+            elif (c == "W"):
+                print("..#....#..\n..#....#..\n..#.##.#..\n..##..##..\n..#....#..\n\n")
+            elif (c == "X"):
+                print("..#....#..\n...#..#...\n....##....\n...#..#...\n..#....#..\n\n")
+            elif (c == "Y"):
+                print("..#....#..\n...#..#...\n....##....\n....##....\n....##....\n\n")
+            elif (c == "Z"):
+                print("..######..\n......#...\n.....#....\n....#.....\n..######..\n\n")
+            elif (c == " "):
+                print("..........\n..........\n..........\n..........\n\n")
+            elif (c == "."):
+                print("----..----\n\n")
+            else:
+                break
+        return
 
-    def menu12():
-        statistic = Visual.all_of_train()
-        return stattistic.describe()
+    # def menu13(self):
+    #     name = input("Nhập text cảm xúc : ")
+    #     arr = {
+    #         0: 'neutral',
+    #         1: 'positive',
+    #          2: 'negative'
+    #      }
+    #     n = int(input("[0:'neutral',1:'positive',2:'negative']=  "))
+    #     return Test.a.Text_speed_1cau(name,arr[n])  
 
-    def menu13():
-        name = input("Nhập text cảm xúc : ")
-        arr = {
-            0: 'neutral',
-            1: 'positive',
-             2: 'negative'
-         }
-        n = int(input("[0:'neutral',1:'positive',2:'negative']=  "))
-        return Test.a.Text_speed_1cau(name,arr[n])  
+    # def menu14():
+    #     #Test với 1 hoặc nhiều câu lưu vô file D:\UIT LEARN\Năm 3 Kì 2\Python\do_an\doAN\Dataset\submission.csv đây là file chính lưu dữ liệu người dùng đưa vào
+    #     df=Test.a.TEXT()  #người dùng nhập dư liệu từ bàn phím (cần xữ lí try catch khi người dùng nhập sai hoặc ràng buộc)
+    #     all=Test.a.TEST_MODEL(df)  # đưa dữ liệu vào và bắt đầu test xuất ra kq
+    #     return Test.a.KQ(df,all)
 
-    def menu14():
-        #Test với 1 hoặc nhiều câu lưu vô file D:\UIT LEARN\Năm 3 Kì 2\Python\do_an\doAN\Dataset\submission.csv đây là file chính lưu dữ liệu người dùng đưa vào
-        df=Test.a.TEXT()  #người dùng nhập dư liệu từ bàn phím (cần xữ lí try catch khi người dùng nhập sai hoặc ràng buộc)
-        all=Test.a.TEST_MODEL(df)  # đưa dữ liệu vào và bắt đầu test xuất ra kq
-        return Test.a.KQ(df,all)
-
-    def menu15():
-        #Test với 1 file csv bất kì nhung phải có header là "text", "sentiment" sai định dạng cút
-        df,link=Test.a.TEXT_CSV()
-        all=Test.a.TEST_MODEL(df)
-        return Test.a.KQ_ADD_CSV(df,all,link)
-
+    # def menu15():
+    #     #Test với 1 file csv bất kì nhung phải có header là "text", "sentiment" sai định dạng cút
+    #     df,link=Test.a.TEXT_CSV()
+    #     all=Test.a.TEST_MODEL(df)
+    #     return Test.a.KQ_ADD_CSV(df,all,link)
+a = Menu()
 while True:
     print('===============================MENU===============================')
     print('------------< Mời bạn chọn tính năng với số tương ứng >-----------')
     print('||                                                               ||')
-    print('||   1.  Load dữ liệu lên                                        ||')
-    print('||   2.  Xem kích thước tập train, tập test                      ||')
-    print('||   3.  Xem bộ dữ liệu train                                    ||')
-    print('||   4.  Xem bộ dữ liệu test                                     ||')
-    print('||   5.  Xây dựng mô hình                                        ||')
+    print('||   1.  Xem kích thước tập train, tập test                      ||')
+    print('||   2.  Xem bộ dữ liệu train                                    ||')
+    print('||   3.  Xem bộ dữ liệu test                                     ||')
+    print('||   4.  Xây dựng mô hình                                        ||')
+    print('||   5.  Train mô hình                                           ||')
     print('||   6.  Đánh giá độ chính xác                                   ||')
     print('||   7.  Kết quả dự đoán trên tập test                           ||')
     print('||   8.  Kết quả dự đoán trên tập train                          ||')
@@ -106,42 +194,76 @@ while True:
     print('||   14. Lưu kết quả dưới dạng file csv                          ||')
     print('||   15. Kết thúc chương trình                                   ||')
     print('||                                                               ||')
-    print('---------< Nhập ký tự bất kỳ để kết thúc chương trình >-----------')
+    print('---------< Nhập số khác bất kỳ để kết thúc chương trình >----------')
     print('============================THE END===============================')
     try:
         select = int(input())
     except:
-        pass
-    if select == 1:
-        menu1()
-    elif select == 2:
-        menu2()
-    elif select == 3:
-        menu3()
-    elif select == 4:
-        menu4()
-    elif select == 5:
-        menu5()
-    elif select == 6:
-        menu6()
-    elif select == 7:
-        menu7()
-    elif select == 8:
-        menu8()
-    elif select == 9:
-        menu9()
-    elif select == 10:
-        menu10()
-    elif select == 11:
-        menu11()
-    elif select == 12:
-        menu12()
-    elif select == 13:
-        menu13()
-    elif select == 14:
-        menu14()
-    elif select == 15:
-        menu15()
+        print('Yêu cầu nhập số')
     else:
-        break
-
+        if select == 1:
+            x,y = a.menu1()
+            print('Kích thước tập train: ', x)
+            print('Kích thước tập test: ', y)
+        elif select == 2:
+            df_train = a.menu2()
+            print(df_train)
+        elif select == 3:
+            df_test = a.menu3()
+            print(df_test)
+        elif select == 4:
+            a.menu4()
+        elif select == 5:
+            x = a.menu5()
+            print("Tỉ lệ chính xác: ", x)
+        elif select == 6:
+            a.menu6()
+        elif select == 7:
+            a.menu7()
+        elif select == 8:
+            a.menu8()
+        elif select == 9:
+            arr = {
+                0: 'neutral',
+                1: 'positive',
+                    2: 'negative'
+                }
+            while True:
+                try:
+                    name = input("Nhập text cảm xúc : ")
+                    if name == '':
+                        raise ValueError
+                except ValueError:
+                    print('Không để trống đoạn text')
+                else:
+                    break
+            while True:
+                try:
+                    n = int(input("[0:'neutral',1:'positive',2:'negative']=  "))
+                    if n > 2 or n < 0:
+                        raise ValueError
+                except:
+                    print('Yêu cầu nhập số 0, 1 hoặc 2')
+                else:
+                    break
+            Test.a.Text_Speed_Sentences(name,arr[n]) 
+        elif select == 10:
+            df = Test.a.Text()  # người dùng nhập dư liệu từ bàn phím (cần xữ lí try catch khi người dùng nhập sai hoặc ràng buộc)
+            all = Test.a.Test_Model(df)  # đưa dữ liệu vào và bắt đầu test xuất ra kq
+            Test.a.Result(df, all)
+        elif select == 11:
+            df, link = Test.a.Text_CSV()
+            all = Test.a.Test_Model(df)
+            Test.a.Result_CSV(df, all, link)
+        elif select == 12:
+            cau = input("Nhập vào chữ bạn muốn in ra: \n\n")
+            a.menu12(cau)
+            break
+        # elif select == 13:    
+        #     menu13()
+        # elif select == 14:
+        #     menu14()
+        # elif select == 15:
+        #     menu15()
+        else:
+            break
