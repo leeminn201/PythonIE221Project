@@ -1,11 +1,11 @@
-'''
-    Module kiểm tra trực tiếp project.
-'''
-from Load_Data import Processing_data as load
-from Build_Model import Build as build
+import keras
+
+from load_data import load
+from build_model import build
 import pandas as pd
 import random as r
 import os
+
 class Test(build.Model_RoBERTa):
     '''
         Class test project.
@@ -13,7 +13,7 @@ class Test(build.Model_RoBERTa):
     def __init__(self,MAX_LEN,PATH,path):
         super().__init__(MAX_LEN,PATH)
         self.path=path
-        self.model=super().Build_model()
+        self.model=super().build_model()
         self.VER = 'v0'
         self.DISPLAY = 1
         self.skf = load.library.Stra_Kfold(5, True, 777)
@@ -68,10 +68,24 @@ class Test(build.Model_RoBERTa):
         '''
         df = pd.DataFrame(columns=["textID", "text", "sentiment"])
         while True:
-            name = input("Nhập text cảm xúc : ")
-            n = int(input("[0:'neutral',1:'positive',2:'negative']=  "))
-            while n != 0 and n != 1 and n != 2:
-                n = int(input("[0:'neutral',1:'positive',2:'negative']=  "))
+            while True:
+                try:
+                    name = input("Nhập text cảm xúc : ")
+                    if name == '':
+                        raise ValueError
+                except ValueError:
+                    print('Không để trống đoạn text')
+                else:
+                    break
+            while True:
+                try:
+                    n = int(input("[0:'neutral',1:'positive',2:'negative']=  "))
+                    if n > 2 or n < 0:
+                        raise ValueError
+                except:
+                    print('Yêu cầu nhập số 0, 1 hoặc 2')
+                else:
+                    break
             i = r.randint(1000, 9999)
             data = {
                 "textID": i,
@@ -79,7 +93,13 @@ class Test(build.Model_RoBERTa):
                 "sentiment": self.arr[n]
             }
             df = df.append(data, ignore_index=True)
-            k = int(input("Nếu bạn ko cần text nữa thì chọn 0 = "))
+            while True:
+                try:
+                    k = int(input("Nếu bạn ko thêm text nữa thì nhập 0, nhập số bất kỳ để thêm text "))
+                except:
+                    print('Phải nhập số')
+                else:
+                    break
             if k == 0:
                 break
         return df
@@ -90,8 +110,26 @@ class Test(build.Model_RoBERTa):
         '''
             Input file test dạng csv.
         '''
-        k = input("Nhập đường dẫn link = ")
-        test = pd.read_csv(k).fillna('')
+        while True:
+            try:
+                k = input("Nhập đường dẫn link = ")
+                if k == '':
+                    raise ValueError
+            except ValueError:
+                print('Không được nhập link trống')
+            else:
+                try:
+                    test = pd.read_csv(k).fillna('')
+                except:
+                    print('Đường link không đúng')
+                else:
+                    try:
+                        pd.isna(test['text'])
+                        pd.isna(test['sentiment'])
+                    except:
+                        print('Bộ dữ liệu không hợp lệ')
+                    else:
+                        break
         return test,k
 #Test 1 câu không cần lưu chỉ test để xem kết quả
     def Text_Speed_Sentences(self,str1,sentiment):
@@ -138,10 +176,10 @@ class Test(build.Model_RoBERTa):
             Kết quả lưu vào file csv minh tạo để lưu khi người dùng nhập
         '''
         test['selected_text'] = all
-        if not os.path.isfile('D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/Dataset/submission.csv'):
-            test.to_csv('D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/Dataset/submission.csv', index=False)
+        if not os.path.isfile('/content/drive/MyDrive/Kỹ thuật lập trình Python/Code_Python/submission.csv'):
+            test.to_csv('/content/drive/MyDrive/Kỹ thuật lập trình Python/Code_Python/submission.csv', index=False)
         else:
-            with open('D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/Dataset/submission.csv', 'a', encoding="utf-8",newline='') as f:
+            with open('/content/drive/MyDrive/Kỹ thuật lập trình Python/Code_Python/submission.csv', 'a', encoding="utf-8",newline='') as f:
                 test.to_csv(f, index=False, header=f.tell()==0)
         print(test[['text','selected_text']])
 #Kết quả lưu vào file CSV khi đưa vào để test,sample_submission.csv lưu toàn bộ dữ liệu được test từ file csv (nhiều file csv)
@@ -152,32 +190,12 @@ class Test(build.Model_RoBERTa):
         Sample_submission.csv lưu toàn bộ dữ liệu được test từ một/nhiều file csv
         '''
         test['selected_text'] = all
-        if not os.path.isfile('D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/Dataset/sample_submission.csv'):
-            test.to_csv('D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/Dataset/sample_submission.csv', index=False)
+        if not os.path.isfile('/content/drive/MyDrive/Kỹ thuật lập trình Python/Code_Python/sample_submission.csv'):
+            test.to_csv('/content/drive/MyDrive/Kỹ thuật lập trình Python/Code_Python/sample_submission.csv', index=False)
         else:
-            with open('D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/Dataset/sample_submission.csv', 'a', encoding="utf-8",newline='') as f:
+            with open('/content/drive/MyDrive/Kỹ thuật lập trình Python/Code_Python/sample_submission.csv', 'a', encoding="utf-8",newline='') as f:
                 test.to_csv(f, index=False, header=f.tell()==0)
         test.to_csv(link_file, index=False)
         print(test['selected_text'])
-path='D:/UIT LEARN/Năm 3 Kì 2/Python/do_an/doAN/backup/v0-roberta-4.h5'
+path='/content/drive/MyDrive/Kỹ thuật lập trình Python/Code_Python/Code_Luong/Backup/v0-roberta-4.h5'
 a = Test(load.MAX_LEN, load.PATH, path)
-#Test với 1 câu nhanh ko cần lưu vô csv:
-name = input("Nhập text cảm xúc : ")
-arr = {
-    0: 'neutral',
-    1: 'positive',
-    2: 'negative'
-}
-n = int(input("[0:'neutral',1:'positive',2:'negative']=  "))
-a.Text_Speed_Sentences(name, arr[n])
-
-
-#Test với 1 hoặc nhiều câu lưu vô file D:\UIT LEARN\Năm 3 Kì 2\Python\do_an\doAN\Dataset\submission.csv đây là file chính lưu dữ liệu người dùng đưa vào
-df = a.Text()  # người dùng nhập dư liệu từ bàn phím (cần xữ lí try catch khi người dùng nhập sai hoặc ràng buộc)
-all = a.Test_Model(df)  # đưa dữ liệu vào và bắt đầu test xuất ra kq
-a.Result(df, all)
-
-#Test với 1 file csv bất kì nhung phải có header là "text", "sentiment" sai định dạng cút
-df, link = a.Text_CSV()
-all = a.Test_Model(df)
-a.Result_CSV(df, all, link)
