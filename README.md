@@ -9,7 +9,7 @@ Link về paper để đọc và tham khảo: <https://arxiv.org/abs/1907.11692>
 Chúng tôi sử dụng mô hình cơ sở roBERTa "pre-trained" và thêm phần đầu câu trả lời câu hỏi tùy chỉnh. Các mã thông báo đầu tiên được nhập vào bert_model và chúng tôi sử dụng đầu ra đầu tiên của BERT, tức là x [0] bên dưới. Đây là các nhúng của tất cả các mã thông báo đầu vào và có hình dạng (batch_size, MAX_LEN, 768). Tiếp theo, chúng tôi áp dụng tf.keras.layers.Conv1D (filter = 1, kernel_size = 1) và biến đổi các nhúng thành hình dạng (batch_size, MAX_LEN, 1). Sau đó, chúng tôi làm phẳng điều này và áp dụng softmax, vì vậy đầu ra cuối cùng của chúng tôi từ x1 có hình dạng (batch_size, MAX_LEN). Đây là một trong những mã hóa nóng của các chỉ báo mã thông báo bắt đầu (cho văn bản được chọn). Và x2 là các chỉ số mã thông báo kết thúc.
 
 ![alt](https://pic3.zhimg.com/80/v2-dcb83ca651acc1c93c9c8f982ee4b67e_1440w.jpg)
-## Các bạn có thể tham khảo cách build model bằng tensoflow
+## Các bạn có thể tham khảo cách build model bằng tensorflow
 
     def build_model():
       ids = tf.keras.layers.Input((MAX_LEN,), dtype=tf.int32)
