@@ -10,6 +10,7 @@ import os
 class Test(build.Model_RoBERTa):
     '''
         Class test project.
+        Lấy model đã được train để dự đoán
     '''
 
     def __init__(self, MAX_LEN, PATH, path):
@@ -30,7 +31,7 @@ class Test(build.Model_RoBERTa):
         '''
             Đưa câu test vào model.
         :param test: câu test
-        :return:
+        :return: ra kết quả của toàn bộ selected_text
         '''
         # INPUT_IDS
         ct = test.shape[0]
@@ -74,6 +75,7 @@ class Test(build.Model_RoBERTa):
     def Text(self):
         '''
             Xử lí câu input.
+            Bắt ngoại lệ với nhưng câu input nhập
         '''
         df = pd.DataFrame(columns=["textID", "text", "sentiment"])
         while True:
@@ -121,6 +123,7 @@ class Test(build.Model_RoBERTa):
     def Text_CSV():
         '''
             Input file test dạng csv.
+            Ouput ra toàn bộ dữ liệu trong file csv
         '''
         while True:
             try:
