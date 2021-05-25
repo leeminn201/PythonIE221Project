@@ -2,7 +2,7 @@ from Library import Library_Structure as l
 
 from Load_Data import Processing_data as load
 
-from Tranning.Train_Model import Train
+from Tranning.Train_Model import Train as train, Train
 
 from Build_Model import build
 
@@ -11,7 +11,7 @@ Class trực quan hóa kết quả sau khi đã trainning cho chương trình xo
 '''
 
 
-class Visual(load):
+class Visual(load.Process_data):
     def __init__(self, ct1, ct2, MAX_LEN):
         super.__init__(self, ct1, ct2, MAX_LEN)
         self.Test = load.test
