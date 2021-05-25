@@ -1,22 +1,19 @@
-pip install transformers
-!pip3 install sentencepiece
-!pip3 install tf_sentencepiece
-
-
-import sys
-sys.path.insert(0,'/content/drive/MyDrive/Kỹ thuật lập trình Python/Code_Python/Code_Luong')
-
-from Library import library
-from load_data import load
-
-from Library import library as l
-from load_data import load
-
-from tranning import train
+# pip install transformers
+# !pip3 install sentencepiece
+# !pip3 install tf_sentencepiece
 from VisualData.visual_data import Visual
-from tranning import Test_cau
+from Tranning import Train as train
+from Load_Data import Processing_data as load
+from Library import Library_Structure as l
+from tranning.Test_Sentences import Test
+from tranning import Test_Sentences
+import sys
+sys.path.insert(
+    0, '/content/drive/MyDrive/Kỹ thuật lập trình Python/Code_Python/Code_Luong')
 
 
+# from Library import library as l
+# from load_data import load
 
 class Menu():
     def __init__(self):
@@ -37,12 +34,12 @@ class Menu():
 
     def menu5(self):
         Build = Train(MAX_LEN, PATH, p.a.input_ids, p.a.input_ids_t, p.a.attention_mask,
-                p.a.attention_mask_t, p.a.token_type_ids, p.a.token_type_ids_t, p.a.start_tokens, p.a.end_tokens)
+                      p.a.attention_mask_t, p.a.token_type_ids, p.a.token_type_ids_t, p.a.start_tokens, p.a.end_tokens)
         return Build.trainModel()
 
     def menu6(self, model):
         Build = Train(load.MAX_LEN, load.PATH, load.a.input_ids, load.a.input_ids_t, load.a.attention_mask,
-                     load.a.attention_mask_t, load.a.token_type_ids, load.a.token_type_ids_t, load.a.start_tokens, load.a.end_tokens)
+                      load.a.attention_mask_t, load.a.token_type_ids, load.a.token_type_ids_t, load.a.start_tokens, load.a.end_tokens)
         return Build.accuracy()
 
     def menu7():
@@ -69,22 +66,24 @@ class Menu():
         arr = {
             0: 'neutral',
             1: 'positive',
-             2: 'negative'
-         }
+            2: 'negative'
+        }
         n = int(input("[0:'neutral',1:'positive',2:'negative']=  "))
-        return Test.a.Text_speed_1cau(name,arr[n])  
+        return Test.a.Text_speed_1cau(name, arr[n])
 
     def menu14():
-        #Test với 1 hoặc nhiều câu lưu vô file D:\UIT LEARN\Năm 3 Kì 2\Python\do_an\doAN\Dataset\submission.csv đây là file chính lưu dữ liệu người dùng đưa vào
-        df=Test.a.TEXT()  #người dùng nhập dư liệu từ bàn phím (cần xữ lí try catch khi người dùng nhập sai hoặc ràng buộc)
-        all=Test.a.TEST_MODEL(df)  # đưa dữ liệu vào và bắt đầu test xuất ra kq
-        return Test.a.KQ(df,all)
+        # Test với 1 hoặc nhiều câu lưu vô file D:\UIT LEARN\Năm 3 Kì 2\Python\do_an\doAN\Dataset\submission.csv đây là file chính lưu dữ liệu người dùng đưa vào
+        df = Test.a.TEXT()  # người dùng nhập dư liệu từ bàn phím (cần xữ lí try catch khi người dùng nhập sai hoặc ràng buộc)
+        # đưa dữ liệu vào và bắt đầu test xuất ra kq
+        all = Test.a.TEST_MODEL(df)
+        return Test.a.KQ(df, all)
 
     def menu15():
-        #Test với 1 file csv bất kì nhung phải có header là "text", "sentiment" sai định dạng cút
-        df,link=Test.a.TEXT_CSV()
-        all=Test.a.TEST_MODEL(df)
-        return Test.a.KQ_ADD_CSV(df,all,link)
+        # Test với 1 file csv bất kì nhung phải có header là "text", "sentiment" sai định dạng cút
+        df, link = Test.a.TEXT_CSV()
+        all = Test.a.TEST_MODEL(df)
+        return Test.a.KQ_ADD_CSV(df, all, link)
+
 
 while True:
     print('===============================MENU===============================')
@@ -144,4 +143,3 @@ while True:
         menu15()
     else:
         break
-
