@@ -16,8 +16,8 @@ import pandas as pd
 
 from Load_Data.Processing_data import PATH, MAX_LEN
 from Build_Model import build as b
-from Tranning import Train
-from Tranning.Train import Train
+from Tranning import Train_Model
+from Tranning.Train_Model import Train
 from Tranning import Test_Sentences as Test
 from VisualData.visual_data import Visual
 
