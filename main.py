@@ -2,18 +2,13 @@
 # !pip3 install sentencepiece
 # !pip3 install tf_sentencepiece
 
+'''
+Nhập thư viện cần thiết từ các module, package
+'''
 from Library import Library_Structure as l
 # from LoadData import load_data as load
 from Load_Data import Processing_data as p
 import pandas as pd
-# from LoadData import processing_data as p
-# from Trainning.train_model import Train
-# from VisualData.visual_data import Visual
-# from BuildModel import build as b
-# from LoadData.load_data import MAX_LEN, PATH
-# from Trainning import Test_cau as Test
-
-
 from Load_Data.Processing_data import PATH, MAX_LEN
 from Build_Model import build as b
 from Tranning import Train_Model
@@ -34,11 +29,9 @@ class Menu():
         self.end_tokens = p.a.end_tokens
 
     def menu1(self):
-        # return load.train.shape, load.test.shape
         return p.train.shape, p.test.shape
 
     def menu2(self):
-        # return load.train.head(30)
         return p.train.head(30)
 
     def menu3(self):
@@ -52,7 +45,6 @@ class Menu():
     def menu5(self):
         Build = Train(MAX_LEN, PATH, p.a.input_ids, p.a.input_ids_t, p.a.attention_mask,
                       p.a.attention_mask_t, p.a.token_type_ids, p.a.token_type_ids_t, p.a.start_tokens, p.a.end_tokens)
-        # self.input_ids, self.input_ids_t, self.preds_start_train, self.preds_end_train, self.preds_start, self.preds_end, self.start_tokens, self.end_token =
         Build.Train_model()
         return Build.Accuracy()
 
@@ -71,6 +63,9 @@ class Menu():
     def menu8(self):
         Visual.wordCloud()
 
+        '''
+        In ra một câu để kết thúc, tính năng này chỉ tăng tính sinh động, không liên quan đến nội dung đồ án
+        '''
     def menu12(self, cau):
         for c in cau:
             c = c.upper()
@@ -135,6 +130,10 @@ class Menu():
         return
 
 
+'''
+Khởi tạo Menu: cho người dùng nhập các phương án lựa chọn cho đến khi không muốn dùng nữa thì kết thúc.
+'''
+
 a = Menu()
 while True:
     print('===============================MENU===============================')
@@ -187,6 +186,10 @@ while True:
                 1: 'positive',
                 2: 'negative'
             }
+            '''
+            Xử lý ngoại lệ nếu người dùng nhập không đúng định dạng( bỏ trống không nhập), 
+            đối với phần nhập cảm xúc, 
+            '''
             while True:
                 try:
                     name = input("Nhập text cảm xúc : ")
