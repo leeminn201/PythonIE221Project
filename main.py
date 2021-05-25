@@ -54,7 +54,7 @@ class Menu():
                       p.a.attention_mask_t, p.a.token_type_ids, p.a.token_type_ids_t, p.a.start_tokens, p.a.end_tokens)
         # self.input_ids, self.input_ids_t, self.preds_start_train, self.preds_end_train, self.preds_start, self.preds_end, self.start_tokens, self.end_token =
         Build.Train_model()
-        return Build.Acu()
+        return Build.Accuracy()
 
     def menu6(self):
         link = '/content/drive/MyDrive/Do_An_Python/Dataset/train.csv'
