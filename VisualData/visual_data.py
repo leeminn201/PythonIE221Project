@@ -2,7 +2,7 @@ from Library import Library_Structure as l
 
 from Load_Data import Processing_data as load
 
-from tranning.train import Train
+from Tranning.Train_Model import Train
 
 from Build_Model import build
 
