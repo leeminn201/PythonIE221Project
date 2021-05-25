@@ -6,9 +6,9 @@ pip install transformers
 import sys
 sys.path.insert(0,'/content/drive/MyDrive/Kỹ thuật lập trình Python/Code_Python/Code_Luong')
 
-from Library import library as l
+from Library import Library_Structure as l
 # from LoadData import load_data as load
-from load_data import load as p
+from Load_Data import Processing_data as p
 import pandas as pd
 # from LoadData import processing_data as p
 # from Trainning.train_model import Train
@@ -18,12 +18,13 @@ import pandas as pd
 # from Trainning import Test_cau as Test
 
 
-from load_data.load import PATH, MAX_LEN
-from build_model import build as b
-from tranning import train
-from tranning.train import Train
-from tranning import Test_cau as Test
+from Load_Data.Processing_data import PATH, MAX_LEN
+from Build_Model import build as b
+from Tranning import Train
+from Tranning.Train import Train
+from Tranning import Test_Sentences as Test
 from VisualData.visual_data import Visual
+
 
 class Menu():
     def __init__(self):
