@@ -22,7 +22,7 @@ class Model_RoBERTa(library.Roberta_Config):
     def Build_model(self):
         '''
             Hàm build model.
-        :return: Model
+        :return: model
         '''
         config = super().Roberta(self.PATH + 'config-roberta-base.json')
         a = library.TFRoberta_Model(config)
