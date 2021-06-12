@@ -1,7 +1,22 @@
 
-# _Tìm hiểu Information Extraction và RoBERTa qua TWEET SENTIMENT EXTRACTION._
+# _Tìm hiểu Information Extraction và RoBERTa qua TWEET SENTIMENT EXTRACTION sử dụng thư viện TENSORFLOW._
 Link Github: <https://github.com/leminhuit201/PythonIE221Project>
 Tài liệu: <https://www.kaggle.com/c/tweet-sentiment-extraction/overview>
+
+## Giới thiệu về thư viện tensorflow
+### Tại sao lại là tensorflow mà không phải các thư viện khác?
+* Tensorflow là thư viện mã nguồn mở cho nhiệm vụ đào tạo và phát triển các mô hình máy học: Mọi người có thể phát triển và đóng góp vào thư viện hiện có.
+* Được phát triển bởi nhóm GoogleBrain: Một thư viện được phát triển và hậu thuẫn bởi một tổ chức lớn như Google đảm bảo thư viện sẽ được duy trì và cải tiến theo thời gian.
+* Tensorflow có cộng đồng người dùng lớn: Ngay từ khi ra mắt vào năm 2015, tensorflow lập tức chiếm vị trí dẫn đầu về số lượng người dùng. Nơi mà skikit-learn đã thống trị trong suốt nhiều năm trước đó. Trải qua nhiều năm phát triển, bảng xếp hạng các thư viện cho việc thực thi máy học có nhiều biến động. Tuy nhiên, tensorflow vẫn nghiễm nhiên dẫn đầu và bỏ xa các thư viện còn lại. 
+Thống kê bảng xếp hạng các thư viện phổ biến nhất cho nhiệm vụ máy học từ năm 2013 đến năm 2019: <https://www.youtube.com/watch?v=744f60NyAgc>
+
+* Tensorflow miễn phí: Người dùng chỉ cần cài đặt thư viện vào máy là có thể sử dụng mà không cần trả phí . Nếu sử dụng google colab, thư viện này thậm chí còn được tích hợp sẵn.
+* Cú pháp dễ đọc, dễ học và nguồn tài liệu phong phú: Các hàm xử lý của tensorflow được đặt tên theo 1 quy chuẩn nhất định bằng tiếng Anh, giúp người mới tiếp cận dễ đọc và nhớ tên các hàm, cũng như có thể áp dụng như các chương trình mã python thông thường. Bên cạnh đó, nếu có thắc mắc về cách sử dụng của một hàm hay một module nào đó, người dùng hoàn toàn có thể kiểm tra tài liệu hướng dẫn được viết chi tiết cho từng hàm. Có thể tìm thấy nguồn hướng dẫn khổng lồ của tensorflow tại: <https://www.tensorflow.org/api_docs/python/tf>
+* Tensorflow có thể dễ dàng huấn luyện chương trình trên CPU và GPU cho nhiệm vụ tính toán: Hiện nay, với các mô hình học sâu, việc tính toán song song với GPU giúp tiết kiệm rất nhiều thời gian, và tensorflow hỗ trợ chúng tôi làm việc đó. Kết hợp với GPU được cung cấp miễn phí từ Google Colab chúng tôi có thể tiết kiệm rất nhiều thời gian cho việc huấn luyện mô hình( mất khoảng hơn 1 tiếng cho bài toán trích xuất thông tin này thay vì hơn 12 tiếng nếu sử dụng CPU của máy tính)
+
+** Với những lí do chính trên, cộng thêm nhiều lợi ích khác mà tensorflow cung cấp, nhóm chúng tôi quyết định sử dụng tensorflow làm thư viện hỗ trợ chính cho nhiệm vụ giải quyết bài toán này, mọi người hoàn toàn có thể tìm hiểu và sử dụng các thư viện hỗ trợ khác như PyTorch, Skikit-learn,... **
+
+
 ### Information Extraction (IE) là một lĩnh vực về xử lý trích xuất thông tin có cấu trúc trong xử lý ngôn ngữ tự nhiên.
 ## Khuyến khích sử dụng Google Colab vì có hỗ trợ chạy bằng GPU. 
 ## Cùng bắt đầu nào
