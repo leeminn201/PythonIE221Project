@@ -13,6 +13,9 @@ Class trực quan hóa kết quả sau khi đã trainning cho chương trình xo
 
 class Visual(load.Process_data):
     def __init__(self, ct1, ct2, MAX_LEN):
+        '''
+        Khởi tạo các tham số cần thiết cho việc trực quan hóa
+        '''
         super.__init__(self, ct1, ct2, MAX_LEN)
         self.Test = load.test
         self.Train = load.train
@@ -23,6 +26,9 @@ class Visual(load.Process_data):
         self.end_pred = []
 
     def visualTrain(self):
+        '''
+        Lấy các vị trí bắt đầu và kết thúc của bộ dữ liệu Train
+        '''
         for k in range(super().input_ids.shape[0]):
             a = l.np.argmax(self.preds_start_train[k, ])
             b = l.np.argmax(self.preds_end_train[k, ])
@@ -53,9 +59,16 @@ class Visual(load.Process_data):
 # '''
 
     def summary(self):
+        '''
+        Thực hiện thống kê một số tham số như giá trị tb, 25% 50% 75% median ở các cột thuộc tính
+        '''
         return train.describe()
 
     def visualTest(self):
+        '''
+        Sau khi thực hiện train mô hình, chương trình có thể dự đoán kết quả trên tập test
+        Hàm này lấy kết quả sau khi huấn luyện và trực quan hóa dưới dạng dataframe
+        '''
         all = []
 
         for k in range(self.input_ids_t.shape[0]):
@@ -76,9 +89,16 @@ class Visual(load.Process_data):
         return self.Test
 
     def metric_tse(self, df, col1, col2):
+        '''
+        Thêm độ đo vào dataframe để trực quan hóa
+        '''
         return df.apply(lambda x: build.jaccard(x[col1], x[col2]), axis=1)
 
     def add_train(self):
+        '''
+        Thêm các thông số như cảm xúc, độ dài văn bản được chọn, số lượng
+        từ dự đoán khác nhau, để thống kê chi tiết hơn tập train.
+        '''
         self.Train = self.Train.replace(
             {'sentiment': {'negative': -1, 'neutral': 0, 'positive': 1}})
         self.Train['len_text'] = self.Train['text'].str.len()
@@ -107,7 +127,9 @@ class Visual(load.Process_data):
         return self.Train
 
     def rep_3chr(self, text):
-        # Kiểm tra xem có từ kí tự lặp lại ko
+        '''
+        Kiểm tra xem có từ kí tự lặp lại ko
+        '''
         chr3 = 0
         for word in text.split():
             for c in set(word):
@@ -116,6 +138,9 @@ class Visual(load.Process_data):
         return chr3
 
     def all_of_Train(self):
+        '''
+        Tạo một biến col_instering lưu trữ tất cả các trường đã thêm vào từ đầu chương trình đến giờ
+        '''
         self.Train['text_chr3'] = self.Train['text'].apply(self.rep_3chr)
         self.Train['selected_text_chr3'] = self.Train['selected_text'].apply(
             self.rep_3chr)
@@ -129,6 +154,9 @@ class Visual(load.Process_data):
         return self.Train
 
     def plot_word_cloud(x, col):
+        '''
+        Đặt các thông số về kích thước màn hình, màu nền, font chữ cho hàm hiển thị word cloud
+        '''
         corpus = []
         for k in x[col].str.split():
             for i in k:
@@ -144,6 +172,10 @@ class Visual(load.Process_data):
         return corpus[:50]
 
     def wordCloud(self):
+        '''
+        Trực quan hóa tần suất từ xuất hiện nhiều nhất trong bộ train và test
+        dưới dạng WordCloud
+        '''
         print('Word cloud các từ xuất hiện trong tập train')
         train_all = self.plot_word_cloud(self.Train, 'text')
         train_all
@@ -156,8 +188,10 @@ class Visual(load.Process_data):
         train_selected_text = self.plot_word_cloud(self.Train, 'selected_text')
         return
 
-    # Metric
     def histogram(self):
+        '''
+        Thống kê tỉ lệ dự đoán so với thực tế bằng đồ thị dạng cột.
+        '''
         print('Độ thị tỉ lệ dự đoán')
         self.Train[['metric']].hist(bins=10)
 
